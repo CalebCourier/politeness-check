@@ -1,21 +1,29 @@
-# to run these, run 
-# pytest test/test-validator.py
-
+import os
+import pytest
 from guardrails import Guard
-from validator import RegexMatch
+from validator import PolitenessCheck
 
-# We use 'refrain' as the validator's fail action,
-#  so we expect failures to always result in a guarded output of None
-# Learn more about corrective actions here:
-#  https://www.guardrailsai.com/docs/concepts/output/#%EF%B8%8F-specifying-corrective-actions
-guard = Guard.from_string(validators=[RegexMatch(regex="a.*", match_type="fullmatch", on_fail="refrain")])
+guard = Guard.from_string(validators=[PolitenessCheck(on_fail="exception")])
 
+@pytest.mark.skipif(
+    os.environ.get("OPENAI_API_KEY") in [None, "mocked"],
+    reason="openai api key not set",
+)
 def test_pass():
-  test_output = "a test value"
-  raw_output, guarded_output, *rest = guard.parse(test_output)
-  assert(guarded_output is test_output)
+  test_output = "Hello there!"
+  result = guard.parse(test_output)
+  
+  assert result.validation_passed is True
+  assert result.validated_output == test_output
 
+
+@pytest.mark.skipif(
+    os.environ.get("OPENAI_API_KEY") in [None, "mocked"],
+    reason="openai api key not set",
+)
 def test_fail():
-  test_output = "b test value"
-  raw_output, guarded_output, *rest = guard.parse(test_output)
-  assert(guarded_output is None)
+  with pytest.raises(Exception) as excinfo:
+    test_output = "What's wrong with you?"
+    guard.parse(test_output)
+  
+  assert str(excinfo.value) == "Validation failed for field with errors: The LLM says 'No'. The validation failed."

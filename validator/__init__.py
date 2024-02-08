@@ -1,3 +1,3 @@
-from .main import RegexMatch
+from .main import PolitenessCheck
 
-__all__ = ["RegexMatch"]
+__all__ = ["PolitenessCheck"]
