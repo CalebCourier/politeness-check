@@ -4,10 +4,10 @@ from guardrails.validator_base import (
     ValidationResult,
     register_validator,
 )
-from .generic_prompt_validator import GenericPromptValidator
+from guardrails.hub.guardrails.response_evaluator.validator import ResponseEvaluator
 
 @register_validator(name="guardrails/politeness_check", data_type="string")
-class PolitenessCheck(GenericPromptValidator):
+class PolitenessCheck(ResponseEvaluator): # type: ignore
     """Validates that generated output is polite.
 
     **Key Properties**

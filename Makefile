@@ -5,8 +5,8 @@ dev:
 lint:
 	ruff check .
 
-tests:
-	pytest ./test
+test:
+	pytest ./tests
 
 type:
 	pyright validator
