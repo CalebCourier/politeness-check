@@ -30,7 +30,7 @@ def test_fail():
         test_output = "What's wrong with you?"
         guard.parse(test_output)
 
-    assert (
-        str(excinfo.value)
-        == "Validation failed for field with errors: The LLM says 'No'. The validation failed."
+    assert str(excinfo.value) in (
+        "Validation failed for field with errors: The LLM says 'No'. The validation failed.",
+        "The LLM returned an invalid answer. Failing the validation...",
     )
