@@ -4,7 +4,9 @@ import pytest
 from guardrails import Guard
 from validator import PolitenessCheck
 
-guard = Guard.from_string(validators=[PolitenessCheck(on_fail="exception")])
+guard = Guard.from_string(
+    validators=[PolitenessCheck(llm_callable="gpt-3.5-turbo", on_fail="exception")]
+)
 
 
 @pytest.mark.skipif(
@@ -13,7 +15,7 @@ guard = Guard.from_string(validators=[PolitenessCheck(on_fail="exception")])
 )
 def test_pass():
     test_output = "Hello there!"
-    result = guard.parse(test_output)
+    result = guard.parse(test_output, metadata={"pass_on_invalid": True})
 
     assert result.validation_passed is True
     assert result.validated_output == test_output

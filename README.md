@@ -4,21 +4,23 @@
 | --- | --- |
 | Date of development | Feb 15, 2024 |
 | Validator type | Format |
-| Blog |  |
+| Blog | - |
 | License | Apache 2 |
 | Input/Output | Output |
 
 # Description
 
-This validator ensures that a generated output is polite.
+This validator validates that a generated output is polite.
 
 # Requirements
-- Dependencies: `litellm`
+* Dependencies: `litellm`
+* API keys: Set your LLM provider API key as an environment variable which will be used by `litellm` to authenticate with the LLM provider. For more information on supported LLM providers and how to set up the API key, refer to the LiteLLM documentation.
+
 
 # Installation
 
 ```bash
-$ guardrails hub install hub://guardrails/politeness_check
+guardrails hub install hub://guardrails/politeness_check
 ```
 
 # Usage Examples
@@ -29,66 +31,49 @@ In this example, we’ll test that a generated sentence is polite.
 
 ```python
 # Import Guard and Validator
-from guardrails.hub import PolitenessCheck
 from guardrails import Guard
-
-# Initialize Validator
-val = PolitenessCheck()
+from guardrails.hub import PolitenessCheck
 
 # Setup Guard
-guard = Guard.from_string(
-    validators=[val, ...],
+guard = Guard().use(
+    PolitenessCheck,
+    llm_callable="gpt-3.5-turbo",
+    on_fail="exception",
 )
 
-guard.parse("Hello there!")  # Validator passes
-guard.parse("What's wrong with you?")  # Validator fails
+res = guard.validate(
+    "Hello, I'm Claude 3, and am here to help you with anything!",
+    metadata={"pass_on_invalid": True},
+)  # Validation passes
+try:
+    res = guard.validate(
+        "Are you insane? I'm not going to answer that!"
+    )  # Validation fails because this response is impolite
+except Exception as e:
+    print(e)
 ```
-
-## Validating JSON output via Python
-
-In this example, we verify that a user’s comment is considered polite.
-
-```python
-# Import Guard and Validator
-from pydantic import BaseModel
-from guardrails.hub import LowerCase
-from guardrails import Guard
-
-val = PolitenessCheck()
-
-# Create Pydantic BaseModel
-class UserInfo(BaseModel):
-		name: str
-		comments: str = Field(validators=[val])
-
-# Create a Guard to check for valid Pydantic output
-guard = Guard.from_pydantic(output_class=UserInfo)
-
-# Run LLM output generating JSON through guard
-guard.parse("""
-{
-		"name": "John Doe",
-		"comment": "You're doing great!"
-}
-""")
+Output:
+```console
+Validation failed for field with errors: The LLM says 'No'. The validation failed.
 ```
 
 # API Reference
 
-**`__init__(self, on_fail="noop")`**
+**`__init__(self, llm_callable="gpt-3.5-turbo", on_fail="noop")`**
 <ul>
 
 Initializes a new instance of the Validator class.
 
 **Parameters:**
 
+- **`llm_callable`** *(str):* The LLM string for LiteLLM to use for validation. Defaults to `gpt-3.5-turbo`.
 - **`on_fail`** *(str, Callable):* The policy to enact when a validator fails. If `str`, must be one of `reask`, `fix`, `filter`, `refrain`, `noop`, `exception` or `fix_reask`. Otherwise, must be a function that is called when the validator fails.
 
 </ul>
 
 <br>
 
-**`__call__(self, value, metadata={}) → ValidationOutcome`**
+**`__call__(self, value, metadata={}) → ValidationResult`**
 
 <ul>
 
@@ -102,6 +87,11 @@ Note:
 **Parameters:**
 
 - **`value`** *(Any):* The input value to validate.
-- **`metadata`** *(dict):* A dictionary containing metadata required for validation. No additional metadata keys are needed for this validator.
+- **`metadata`** *(dict):* A dictionary containing metadata required for validation. Keys and values must match the expectations of this validator.
+    
+    
+    | Key | Type | Description | Default | Required |
+    | --- | --- | --- | --- | --- |
+    | `pass_on_invalid` | Boolean | Whether to pass the validation if the LLM returns an invalid response | False | No |
 
 </ul>
