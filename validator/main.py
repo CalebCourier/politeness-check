@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Callable, Dict, Optional
 
 from guardrails.hub.guardrails.response_evaluator.validator import ResponseEvaluator
 from guardrails.validator_base import (
@@ -24,6 +24,13 @@ class PolitenessCheck(ResponseEvaluator):  # type: ignore
         on_fail (Callable, optional): A function to call when validation fails.
             Defaults to None.
     """  # noqa
+
+    def __init__(
+        self,
+        llm_callable: Optional[str] = "gpt-3.5-turbo",
+        on_fail: Optional[Callable] = None,
+    ):
+        super().__init__(on_fail=on_fail, llm_callable=llm_callable)
 
     def validate(self, value: Any, metadata: Dict) -> ValidationResult:
         """Validates that the generated output is polite."""
