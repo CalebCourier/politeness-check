@@ -1,13 +1,14 @@
 from typing import Any, Dict
 
+from guardrails.hub.guardrails.response_evaluator.validator import ResponseEvaluator
 from guardrails.validator_base import (
     ValidationResult,
     register_validator,
 )
-from guardrails.hub.guardrails.response_evaluator.validator import ResponseEvaluator
+
 
 @register_validator(name="guardrails/politeness_check", data_type="string")
-class PolitenessCheck(ResponseEvaluator): # type: ignore
+class PolitenessCheck(ResponseEvaluator):  # type: ignore
     """Validates that generated output is polite.
 
     **Key Properties**
@@ -24,8 +25,8 @@ class PolitenessCheck(ResponseEvaluator): # type: ignore
             Defaults to None.
     """  # noqa
 
-
     def validate(self, value: Any, metadata: Dict) -> ValidationResult:
-        metadata["validation_question"] = "Is the LLM Response polite?"
+        """Validates that the generated output is polite."""
+        metadata["validation_question"] = "Is the above 'Response' polite?"
 
         return super().validate(value, metadata)

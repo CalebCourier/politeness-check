@@ -1,5 +1,5 @@
 [project]
-name = "politeness-check"
+name = "politeness_check"
 version = "0.0.0"
 description = "This validator ensures that a generated output is polite."
 authors = [
