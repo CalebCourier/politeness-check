@@ -24,7 +24,7 @@ This validator validates that a generated output is polite.
 ## Installation
 
 ```bash
-guardrails hub install hub://guardrails/politeness_check
+$ guardrails hub install hub://guardrails/politeness_check
 ```
 
 ## Usage Examples
@@ -77,7 +77,7 @@ Initializes a new instance of the Validator class.
 
 <br>
 
-**`__call__(self, value, metadata={}) → ValidationResult`**
+**`__call__(self, value, metadata={}) -> ValidationResult`**
 
 <ul>
 
@@ -99,4 +99,3 @@ Note:
     | `pass_on_invalid` | Boolean | Whether to pass the validation if the LLM returns an invalid response | False | No |
 
 </ul>
-
