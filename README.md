@@ -1,31 +1,35 @@
 ## Overview
 
 | Developed by | Guardrails AI |
-| --- | --- |
 | Date of development | Feb 15, 2024 |
 | Validator type | Format |
-| Blog | - |
+| Blog |  |
 | License | Apache 2 |
 | Input/Output | Output |
 
-# Description
+## Description
 
+### Intended Use
 This validator validates that a generated output is polite.
 
-# Requirements
-* Dependencies: `litellm`
+### Requirements
+
+* Dependencies:
+    - `litellm`
+    - guardrails-ai>=0.4.0
+
 * API keys: Set your LLM provider API key as an environment variable which will be used by `litellm` to authenticate with the LLM provider. For more information on supported LLM providers and how to set up the API key, refer to the LiteLLM documentation.
 
 
-# Installation
+## Installation
 
 ```bash
-guardrails hub install hub://guardrails/politeness_check
+$ guardrails hub install hub://guardrails/politeness_check
 ```
 
-# Usage Examples
+## Usage Examples
 
-## Validating string output via Python
+### Validating string output via Python
 
 In this example, we’ll test that a generated sentence is polite.
 
@@ -73,7 +77,7 @@ Initializes a new instance of the Validator class.
 
 <br>
 
-**`__call__(self, value, metadata={}) → ValidationResult`**
+**`__call__(self, value, metadata={}) -> ValidationResult`**
 
 <ul>
 
